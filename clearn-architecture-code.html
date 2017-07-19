@@ -1,0 +1,376 @@
+<html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/php.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/hybrid.min.css">
+<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Average" rel="stylesheet">
+<style>
+
+body {
+	background-color: rgb(55, 71, 79);
+	color: #fff;
+	padding: 40px;
+	margin: 0px;
+}
+
+h1 {
+	font-family: 'Oswald', sans-serif;
+	color: #fff;
+}
+
+h2 {
+
+}
+
+.hljs {
+	padding: 20px;
+}
+
+.page {
+	position: relative;
+}
+
+.legend {
+	display:inline-block;
+	padding:20px;
+	padding-right: 40px;
+	background-color: rgb(55, 71, 79);
+	position: fixed;
+	top: 100px;
+	right: 40px;
+	font-family: 'Average', serif;
+	border: 20px solid #1d1f21;
+}
+
+.legend {
+	line-height: 160%;
+}
+
+.app {
+	background-color: #406277;
+}
+
+.domain {
+	background-color: #41918e;
+}
+
+.config {
+	background-color: #40774a;
+}
+
+.aws {
+	background-color: #777440;
+}
+
+.fly {
+	background-color: #6e4077;
+}
+
+.orm {
+	background-color: #774640;
+}
+
+</style>
+<script>hljs.initHighlightingOnLoad();</script>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+<script>
+
+var activePage = 0;
+
+var numPages;
+
+$(function(){
+	numPages = $('.page').length;
+
+	$('html').keydown(function(e){
+		if (e.which == 39) {
+			moveForward();
+		}
+		if (e.which == 37) {
+			moveBackward();
+		}
+    });
+
+    showPage(activePage);
+	
+});
+
+function moveForward()
+{
+	if (activePage +1 == numPages) {
+		return;
+	}
+	activePage++;
+	showPage(activePage);
+}
+
+function showPage(page)
+{
+	$('.page:not(:eq('+page+'))').hide();
+	$('.page:eq('+page+')').show();
+}
+
+function moveBackward()
+{
+	if (activePage == 0) {
+		return;
+	}
+	activePage--;
+	showPage(activePage);
+}
+
+</script>
+<body>
+<div class="page">
+	<h1>In the Beginning...</h1>
+	<pre>
+	<code class="php">namespace App\Usecases;
+
+use Ramsey\Uuid\Uuid;
+use SplFileInfo;
+use Aws\S3\S3Client;
+use League\Flysystem\AwsS3v3\AwsS3Adapter;
+use League\Flysystem\Filesystem;
+use Domain\User;
+
+class SetProfileImage 
+{
+    private $filesystem;
+
+    public function __construct()
+    {
+        $client = S3Client::factory([
+            'credentials' => [
+                'key' => getenv('AWS_ACCESS_KEY'),
+                'secret' => getenv('AWS_SECRET'),
+            ],
+            'region' => getenv('AWS_REGION'),
+            'version' => 'latest',
+        ]);
+
+        $adapter = new AwsS3Adapter($client, 'bucket-o-images');
+
+        $this->filesystem = new Filesystem($adapter);
+    }
+
+    public function handle(Uuid $user_id, SplFileInfo $image): Uuid
+    {
+        $image_id = Uuid::uuid4();
+
+        $filepath = "profle_image/$image_id.".$file->getExtension();
+        $image_contents = $image->fread($image->getSize());
+        $this->filesystem->write($filepath, $image_contents);
+
+        $user = User::find($user_id->toString());
+        $user->setProfileImage($image_id);
+        User::where('id', $user_id->toString())->update($user->toArray());
+
+        return $image_id;
+    }
+}
+
+	</code>
+	</pre>
+</div>
+
+<div class="page">
+	<h1>Concepts</h1>
+	<pre>
+	<code class="php">namespace App\Usecases;
+
+use Ramsey\Uuid\Uuid;
+use SplFileInfo;
+use Aws\S3\S3Client;
+use League\Flysystem\AwsS3v3\AwsS3Adapter;
+use League\Flysystem\Filesystem;
+use Domain\User;
+
+class SetProfileImage 
+{
+    private $filesystem;
+
+    public function __construct()
+    {
+        <span class="aws">$client = S3Client::factory([</span>
+            <span class="config">'credentials' => [</span>
+                <span class="config">'key' => getenv('AWS_ACCESS_KEY'),</span>
+                <span class="config">'secret' => getenv('AWS_SECRET'),</span>
+            <span class="config">],</span>
+            <span class="config">'region' => getenv('AWS_REGION'),</span>
+            'version' => 'latest',</span>
+        <span class="aws">]);</span>
+
+        <span class="aws">$adapter = new AwsS3Adapter($client, 'bucket-o-images');</span>
+
+        <span class="fly">$this->filesystem = new Filesystem($adapter);</span>
+	}
+
+    public function handle(<span class="domain">Uuid $user_id</span>, <span class="app">SplFileInfo $image)</span>: <span class="domain">Uuid</span>
+    {
+        <span class="domain">$image_id = Uuid::uuid4();</span>
+
+        <span class="fly">$filepath = "profle_image/$image_id.".$file->getExtension();</span>
+        <span class="fly">$image_contents = $image->fread($image->getSize());</span>
+        <span class="fly">$this->filesystem->write($filepath, $image_contents);</span>
+
+        <span class="orm">$user = User::find($user_id->toString());</span>
+        <span class="domain">$user->setProfileImage($image_id);</span>
+        <span class="orm">User::where('id', $user_id->toString())->update($user->toArray());</span>
+
+        <span class="app">return $image_id;</span>
+    }
+}
+
+	</code>
+	</pre>
+	<div class="legend">
+		Legend:<br>
+		<span class="app"> Our Application</span><br>
+		<span class="domain"> Domain</span><br>
+		<span class="config"> Config</span><br>
+		<span class="aws"> AWS S3</span><br>
+		<span class="fly"> Flysystem</span><br>
+		<span class="orm"> Eloquent ORM</span><br>
+	</div>
+</div>
+
+<div class="page">
+	<h1>Application Layer (Clean)</h1>
+	<pre>
+	<code class="php">namespace App\Usecases;
+
+use Ramsey\Uuid\Uuid;
+use SplFileInfo;
+use App\Services;
+
+class SetProfileImage 
+{
+    private $image_store;
+    private $user_repository;
+
+    public function __construct(Services\ImageRepo $image_repo, Services\UserRepository $user_repository)
+    {
+        $this->image_repo = image_repo;
+        $this->user_repository = $user_repository;
+    }
+
+    public function handle(Uuid $user_id, SplFileInfo $image): Uuid
+    {
+        $image_id = Uuid::uuid4();
+
+        $this->image_repo->store($image_id, $image);
+
+        $user = $this->user_repository->get($user_id);
+
+        $user->setProfileImage($image_id);
+
+        $user_repository->store($user);
+
+        return $image_id;
+    }
+}
+	</code>
+	</pre>
+</div>
+
+<div class="page">
+	<h1>Application Services</h1>
+	<pre>
+	<code class="php">namespace App\Services;
+
+use Ramsey\Uuid\Uuid;
+use SplFileInfo;
+
+interface ImageRepository 
+{
+    public function store(Uuid $image_id, SplFileInfo $image);
+}
+
+namespace App\Services;
+
+use Uuid;
+use Domain\User;
+
+interface UserRepostiory
+{
+    public function get(Uuid $user_id): User
+
+    public function store($user);
+}
+	</code>
+	</pre>
+</div>
+
+<div class="page">
+	<h1>Infrastructure: ImageRepository (S3/Flsystem Implementation) </h1>
+	<pre>
+	<code class="php">namespace Infrastructure\App\Services;
+
+use App\Services\ImageRepository;
+use Ramsey\Uuid\Uuid;
+use Aws\S3\S3Client;
+use League\Flysystem\AwsS3v3\AwsS3Adapter;
+use League\Flysystem\Filesystem;
+
+class S3ImageRepository implements ImageRepository
+{
+    private $filesystem;
+
+    public function __construct()
+    {
+            $client = S3Client::factory([
+                'credentials' => [
+                    'key' => getenv('AWS_ACCESS_KEY'),
+                    'secret' => getenv('AWS_SECRET'),
+                ],
+                'region' => getenv('AWS_REGION'),
+                'version' => 'latest',
+            ]);
+
+            $adapter = new AwsS3Adapter($client, 'bucket-o-images');
+
+            $this->filesystem = new Filesystem($adapter);
+    }
+
+    public function store(Uuid $image_id, SplFileInfo $image)
+    {
+        $filepath = "profle_image/$image_id.".$file->getExtension()
+        $image_contents = $image->fread($image->getSize());
+        $this->filesystem->write($filepath, $image_contents);
+    }
+}
+	</code>
+	</pre>
+</div>
+
+<div class="page">
+	<h1>Infrastructure: UserRepostiory (Eloquent Implementation)</h1>
+	<pre>
+	<code class="php">namespace Infrastructure\App\Services;
+
+use App\Services\UserRepostiory;
+use Ramsey\Uuid\Uuid;
+use Domain\User;
+
+class EloquentUserRepostiory implements UserRepostiory
+{
+    public function get(Uuid $user_id):User 
+    {
+        return User::find($user_id->toString());
+    }
+
+    public function store($user)
+    {
+        User::where('id', $user_id->toString())->update($user->toArray());
+    }
+}
+	</code>
+	</pre>
+</div>
+
+
+</body>
+</html>
