@@ -35,22 +35,33 @@ h2 {
 .page {
 	position: relative;
     margin-top: 20px;
+    display: none;
 }
 
 .legend {
-	display:inline-block;
-	padding:20px;
+	display: inline-block;
+	padding: 10px;
 	padding-right: 40px;
-	background-color: rgb(55, 71, 79);
 	position: fixed;
 	top: 100px;
-	right: 40px;
+	right: 60px;
 	font-family: 'Average', serif;
-	border: 20px solid #2b2b2b;
+	border: 2px solid rgb(55, 71, 79);
+    background-color: #2b2b2b;
 }
 
 .legend {
 	line-height: 160%;
+    font-family: monospace;
+}
+
+.legend span {
+    display: inline-block;
+    padding: 4px;
+    border-radius: 6px;
+    line-height: 100%;
+    margin-top: 4px;
+    margin-left: 5px;
 }
 
 .app {
@@ -93,10 +104,16 @@ $(function(){
 	numPages = $('.page').length;
 
 	$('html').keydown(function(e){
-		if (e.which == 39) {
+		
+        var keys = {
+            left: 37,
+            right: 39
+        }
+
+        if (e.which == keys.right) {
 			moveForward();
 		}
-		if (e.which == 37) {
+		if (e.which == keys.left) {
 			moveBackward();
 		}
     });
@@ -235,12 +252,12 @@ class SetProfileImage
 	</pre>
 	<div class="legend">
 		Legend:<br>
-		<span class="app"> Our Application</span><br>
-		<span class="domain"> Domain</span><br>
-		<span class="config"> Config</span><br>
-		<span class="aws"> AWS S3</span><br>
-		<span class="fly"> Flysystem</span><br>
-		<span class="orm"> Eloquent ORM</span><br>
+		<span class="domain">Domain</span><br>
+        <span class="app">Application</span><br>
+		<span class="config">Config</span><br>
+		<span class="aws">AWS S3</span><br>
+		<span class="fly">Flysystem</span><br>
+		<span class="orm">Eloquent ORM</span><br>
 	</div>
 </div>
 
