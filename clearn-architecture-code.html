@@ -320,7 +320,7 @@ use Domain\User;
 
 interface UserRepostiory
 {
-    public function get(Uuid $user_id): User
+    public function get(Uuid $user_id): User;
 
     public function store($user);
 }
