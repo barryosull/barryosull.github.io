@@ -230,7 +230,7 @@ class SetProfileImage
         <span class="aws">$adapter = new AwsS3Adapter($client, 'bucket-o-images');</span>
 
         <span class="fly">$this->filesystem = new Filesystem($adapter);</span>
-	}
+    }
 
     public function handle(<span class="domain">Uuid $user_id</span>, <span class="app">SplFileInfo $image)</span>: <span class="domain">Uuid</span>
     {
