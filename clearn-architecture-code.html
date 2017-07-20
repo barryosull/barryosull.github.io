@@ -224,7 +224,7 @@ class SetProfileImage
                 <span class="config">'secret' => getenv('AWS_SECRET'),</span>
             <span class="config">],</span>
             <span class="config">'region' => getenv('AWS_REGION'),</span>
-            'version' => 'latest',</span>
+            <span class="config">'version' => 'latest',</span>
         <span class="aws">]);</span>
 
         <span class="aws">$adapter = new AwsS3Adapter($client, 'bucket-o-images');</span>
