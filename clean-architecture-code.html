@@ -184,7 +184,7 @@ class SetProfileImage
     {
         $image_id = Uuid::uuid4();
 
-        $filepath = "profle_image/$image_id.".$file->getExtension();
+        $filepath = "profle_image/".$image_id->toString().".".$file->getExtension();
         $image_contents = $image->fread($image->getSize());
         $this->filesystem->write($filepath, $image_contents);
 
@@ -236,7 +236,7 @@ class SetProfileImage
     {
         <span class="domain">$image_id = Uuid::uuid4();</span>
 
-        <span class="fly">$filepath = "profle_image/$image_id.".$file->getExtension();</span>
+        <span class="fly">$filepath = "profle_image/".$image_id->toString().".".$file->getExtension();</span>
         <span class="fly">$image_contents = $image->fread($image->getSize());</span>
         <span class="fly">$this->filesystem->write($filepath, $image_contents);</span>
 
@@ -272,13 +272,13 @@ use App\Services;
 
 class SetProfileImage 
 {
-    private $image_store;
-    private $user_repository;
+    private $image_repo;
+    private $user_repo;
 
-    public function __construct(Services\ImageRepo $image_repo, Services\UserRepository $user_repository)
+    public function __construct(Services\ImageRepository $image_repo, Services\UserRepository $user_repo)
     {
-        $this->image_repo = image_repo;
-        $this->user_repository = $user_repository;
+        $this->image_repo = $image_repo;
+        $this->user_repo = $user_repo;
     }
 
     public function handle(Uuid $user_id, SplFileInfo $image): Uuid
@@ -287,11 +287,11 @@ class SetProfileImage
 
         $this->image_repo->store($image_id, $image);
 
-        $user = $this->user_repository->get($user_id);
+        $user = $this->user_repo->get($user_id);
 
         $user->setProfileImage($image_id);
 
-        $user_repository->store($user);
+        $this->user_repo->store($user);
 
         return $image_id;
     }
@@ -361,7 +361,7 @@ class S3ImageRepository implements ImageRepository
 
     public function store(Uuid $image_id, SplFileInfo $image)
     {
-        $filepath = "profle_image/$image_id.".$file->getExtension()
+        $filepath = "profle_image/".$image_id->toString().".".$file->getExtension();
         $image_contents = $image->fread($image->getSize());
         $this->filesystem->write($filepath, $image_contents);
     }
