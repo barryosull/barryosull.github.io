@@ -345,18 +345,18 @@ class S3ImageRepository implements ImageRepository
 
     public function __construct()
     {
-            $client = S3Client::factory([
-                'credentials' => [
-                    'key' => getenv('AWS_ACCESS_KEY'),
-                    'secret' => getenv('AWS_SECRET'),
-                ],
-                'region' => getenv('AWS_REGION'),
-                'version' => 'latest',
-            ]);
+        $client = S3Client::factory([
+            'credentials' => [
+                'key' => getenv('AWS_ACCESS_KEY'),
+                'secret' => getenv('AWS_SECRET'),
+            ],
+            'region' => getenv('AWS_REGION'),
+            'version' => 'latest',
+        ]);
 
-            $adapter = new AwsS3Adapter($client, 'bucket-o-images');
+        $adapter = new AwsS3Adapter($client, 'bucket-o-images');
 
-            $this->filesystem = new Filesystem($adapter);
+        $this->filesystem = new Filesystem($adapter);
     }
 
     public function store(Uuid $image_id, SplFileInfo $image)
